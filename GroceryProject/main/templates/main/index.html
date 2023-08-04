@@ -1,0 +1,426 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+{% load static %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% block title %}
+    <title>Store</title>
+    {% endblock %}
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="vendor/css/index.css" rel="stylesheet">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Vue - Clean Minimal eCommerce HTML Template</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'main/img/favicon.png' %}">
+    <!-- Place favicon.ico in the root directory -->
+
+    <!-- CSS here -->
+    <link rel="stylesheet" href="{% static 'main/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/meanmenu.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/meanmenu.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/default.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'main/css/responsive.css' %}">
+</head>
+
+<body>
+
+
+    <!-- preloader -->
+    <div id="preloader">
+        <div class="preloader">
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+    <!-- preloader end  -->
+
+    <!-- header start -->
+    <header>
+        <div id="header-sticky" class="header-area box-90">
+            <div class="container-fluid">
+                <div class="row align-items-center">
+                    <div class="col-xl-2 col-lg-6 col-md-6 col-7 col-sm-5 d-flex align-items-center pos-relative">
+
+                        <div class="logo">
+                            <a href="{% url 'index' %}"><img src="{% static 'main/img/logo/logo.png' %}" alt=""></a>
+                        </div>
+
+                    </div>
+                    <div class="col-xl-8 col-lg-6 col-md-8 col-8 d-none d-xl-block">
+                        <div class="main-menu text-center">
+                            <nav id="mobile-menu">
+                                <ul>
+                                    <li>
+                                        <a href="{% url 'index' %}">Главная страница</a>
+
+                                    </li>
+                                    <li class="mega-menu">
+                                        <a href="{% url 'shop' %}">Каталог</a>
+
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'contact_us' %}">Контакты</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'new_products' %}">Новинки</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'sales' %}">Акции</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#">Кабинет</a>
+                                        <ul class="submenu">
+                                            <li>
+                                                <a href="{% url 'login' %}">Войти</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'register' %}">Регистрация</a>
+                                            </li>
+
+
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'about' %}">О нас</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-6 col-md-6 col-5 col-sm-7 pl-0">
+                        <div class="header-right f-right">
+                            <ul>
+                                <li class="login-btn">
+                                    {% if request.user.is_authenticated %}
+                                    <a href="{% url 'profile' %}">
+                                        {% else %}
+                                        <a href="{% url 'login' %}">
+                                            {% endif %}
+                                            <i class="far fa-user"></i></a>
+                                </li>
+                                <li class="d-shop-cart"><a href="{% url 'cart' %}"><i
+                                            class="flaticon-shopping-cart"></i></a>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 d-xl-none">
+                        <div class="mobile-menu"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header end -->
+    {% block main %}
+
+    <main>
+        <!-- slider-area start -->
+        <section class="slider-area pos-relative">
+            <div class="slider-active">
+                <div class="single-slider slide-1-style slide-height d-flex align-items-center"
+                    data-background="{% static 'main/img/slider/slider1.png' %}">
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-7">
+                                <div class="slide-content">
+                                    <h1 data-animation="fadeInUp" data-delay=".5s"></h1>
+                                    <div class="slide-btn">
+                                        <a class="btn theme-btn" href="{% url 'shop' %}" data-animation="fadeInLeft"
+                                            data-delay=".7s">начать покупку</a>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="single-slider slide-1-style slide-height d-flex align-items-center"
+                    data-background="{% static 'main/img/slider/slide1-1.png' %}">
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xl-7">
+                                <div class="slide-content">
+                                    <span data-animation="fadeInRight" data-delay=".2s"></span>
+                                    <h1 data-animation="fadeInUp" style="color: white" data-delay=".5s">Всегда свежий
+                                        урожай</h1>
+                                    <div class="slide-btn">
+                                        <a class="btn theme-btn" href="{% url 'shop' %}" data-animation="fadeInLeft"
+                                            data-delay=".7s">Начать покупку</a>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- slider-area end -->
+
+        <!-- banner area start -->
+        <section class="banner-area pt-30 pl-15 pr-15">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="banner mb-30">
+                            <a href="{% url 'shop' %}"><img src="{% static 'main/img/banner/banner-1/banner1.png' %}"
+                                    alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="banner mb-30">
+                            <a href="{% url 'shop' %}"><img src="{% static 'main/img/banner/banner-1/banner2.png' %}"
+                                    alt=""></a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="banner mb-30">
+                            <a href="{% url 'shop' %}"><img src="{% static 'main/img/banner/banner-1/banner3.png' %}"
+                                    alt=""></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- banner area end -->
+
+        <!-- product-area start -->
+
+        <!-- product-area end -->
+        <!-- product-area start -->
+
+        <section class="product-area box-90 pt-45 pb-40">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xl-5 col-lg-12">
+                        <div class="area-title mb-50">
+                            <h2 style="text-align: center;">Лучшие продукты</h2>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="product-tab-content">
+                            <div class="tab-content" id="myTabContent1">
+                                <div class="tab-pane fade show active" id="home1" role="tabpanel"
+                                    aria-labelledby="home-tab">
+                                    <div class="product-slider owl-carousel">
+                                        {% for product in products %}
+                                        <div class="pro-item">
+                                            <div class="product-wrapper mb-50">
+                                                <div class="product-img mb-25">
+                                                    <a href="{{ product.get_absolute_url }}">
+                                                        <img src="{{ product.image.url }}" alt="">
+                                                        <img class="secondary-img" src="{{ product.image.url }}" alt="">
+                                                    </a>
+                                                    <div class="product-action text-center">
+                                                        <a href="#" title="Shopping Cart">
+                                                            <i class="flaticon-shopping-cart"></i>
+                                                        </a>
+                                                        <a href="#" title="Quick View">
+                                                            <i class="flaticon-eye"></i>
+                                                        </a>
+                                                        <a href="#" data-toggle="tooltip" data-placement="right"
+                                                            title="Compare">
+                                                            <i class="flaticon-compare"></i>
+                                                        </a>
+                                                    </div>
+                                                    <div class="sale-tag">
+                                                        <span class="new">new</span>
+                                                        <span class="sale">sale</span>
+                                                    </div>
+                                                </div>
+                                                <div class="product-content">
+                                                    <div class="pro-cat mb-10">
+                                                        <a href="shop.html">{{ product.category }}</a>
+                                                    </div>
+                                                    <h4>
+                                                        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+                                                    </h4>
+                                                    <div class="product-meta">
+                                                        <div class="pro-price">
+                                                            <span>₸{{ product.price }} KZT</span>
+                                                            <span class="old-price">₸230.00 KZT</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="product-wishlist">
+                                                        <a href="#"><i class="far fa-heart" title="Wishlist"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- product-area end -->
+
+
+
+
+
+        <!-- subscribe-area start -->
+        <section class="subscribe-area box-105">
+            <div class="subscribe-inner black-bg pt-70 pb-20">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xl-5">
+                            <div class="subscribe d-flex fix">
+                                <div class="subscribe-icon">
+                                    <img src="{% static 'main/img/icon/subscribe.png' %}" alt="">
+                                </div>
+                                <div class="area-title white-color mb-50">
+                                    <h2>Новостная рассылка</h2>
+                                    <p>Будьте в курсе новостей самыми первыми!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-7">
+                            <div class="subscribe fix">
+                                <div class="subscribe-form mb-50">
+                                    <form action="#">
+                                        <input type="text" placeholder="Напишите ваш e-mail адрес">
+                                        <button class="btn theme-btn" type="отправить">отправить</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- subscribe-area end -->
+    </main>
+    {% endblock %}
+
+    <!-- footer start -->
+    <footer class="footer-area pl-100 pr-100 mt-100">
+        <div class="footer-area box-90 pt-100 pb-60" data-background="{% static 'main/img/bg/footer.jpg' %}">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-5 col-lg-6 col-md-6 ">
+                        <div class="footer-widget mb-40 pr-70">
+                            <div class="footer-logo">
+                                <a href="index.html"><img src="{% static 'main/img/logo/footer-logo.png' %}" alt=""></a>
+                            </div>
+                            <p>Витаминный уголок – ваш источник свежих фруктов и овощей, приготовленных для вашего
+                                здоровья и благополучия. Мы являемся вашим надежным партнером в поиске натуральных и
+                                питательных продуктов, которые помогут вам поддерживать активный и здоровый образ жизни.
+                            </p>
+                            <div class="footer-time d-flex mt-30">
+                                <div class="time-icon">
+                                    <img src="{% static 'main/img/icon/time.png' %}" alt="">
+                                </div>
+                                <div class="time-text">
+                                    <span>Есть вопросы?</span>
+                                    <h2>8 707 673 80 29</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-3 col-md-3">
+                        <div class="footer-widget mb-40">
+                            <h3>Социальные сети</h3>
+                            <ul class="footer-link">
+                                <li><a href="#">Instagram</a></li>
+                                <li><a href="#">WhatsApp</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="copyright-area box-105">
+            <div class="container-fluid">
+                <div class="pt-30 pb-30">
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="copyright text-center">
+                                <p>Copyright © 2023 <a href="#">BasicTheme</a>. All Rights Reserved</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-lg-6 col-md-6">
+                            <div class="footer-icon text-center text-md-right ">
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-whatsapp"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- footer end -->
+
+    <!-- Fullscreen search -->
+    <div class="search-wrap">
+        <div class="search-inner">
+            <i class="fas fa-times search-close" id="search-close"></i>
+            <div class="search-cell">
+                <form method="get">
+                    <div class="search-field-holder">
+                        <input type="search" class="main-search-input" placeholder="Search Entire Store...">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> <!-- end fullscreen search -->
+
+
+
+
+
+    <!-- JS here -->
+    <script src="{% static 'main/js/script.js' %}"></script>
+    <script src="{% static 'main/js/vendor/jquery-1.12.4.min.js' %}"></script>
+    <script src="{% static 'main/js/popper.min.js' %}"></script>
+    <script src="{% static 'main/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'main/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'main/js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'main/js/one-page-nav-min.js' %}"></script>
+    <script src="{% static 'main/js/slick.min.js' %}"></script>
+    <script src="{% static 'main/js/jquery.meanmenu.min.js' %}"></script>
+    <script src="{% static 'main/js/ajax-form.js' %}"></script>
+    <script src="{% static 'main/js/wow.min.js' %}"></script>
+    <script src="{% static 'main/js/jquery.scrollUp.min.js' %}"></script>
+    <script src="{% static 'main/js/jquery.final-countdown.min.js' %}"></script>
+    <script src="{% static 'main/js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'main/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'main/js/plugins.js' %}"></script>
+    <script src="{% static 'main/js/main.js' %}"></script>
+</body>
+
+</html>
