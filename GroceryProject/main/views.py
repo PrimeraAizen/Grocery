@@ -45,7 +45,8 @@ def new_products(request):
 
 # Sales
 def sales(request):
-    return render(request, 'main/shop-filter2.html')
+    products = Product.objects.all()
+    return render(request, 'main/shop-filter2.html', {'products': products})
 
 @unauthenticated_user
 def loginPage(request):

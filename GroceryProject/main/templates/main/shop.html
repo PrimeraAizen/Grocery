@@ -52,12 +52,12 @@
                                 </ul>
                             </div>
                             <div class="pro-filter mb-40 f-right">
-                                <form action="#">
+                                <form action="{% url 'shop' %}" method="post">
                                     <select name="pro-filter" id="pro-filter">
-                                        <option value="1">Сортировка</option>
-                                        <option value="2">Топ продукты</option>
-                                        <option value="3">С мин по макс</option>
-                                        <option value="4">С макс по мин</option>
+                                        <option value="default">Сортировка</option>
+                                        <option value="top">Топ продукты</option>
+                                        <option value="increasing">С мин по макс</option>
+                                        <option value="decreasing">С макс по мин</option>
                                     </select>
                                 </form>
                             </div>
@@ -147,7 +147,7 @@
                                         </div>
                                         <p>{{ product.description }}</p>
                                         <div class="product-action">
-                                            <a href="#" title="Shoppingb Cart">
+                                            <a href="#" title="Shopping Cart">
                                                 <i class="flaticon-shopping-cart"></i>
                                             </a>
                                             <a href="#" title="Quick View">
@@ -187,7 +187,7 @@
                             <h3 class="shop-title">Категории</h3>
                             <ul class="shop-link">
                                 {% for category in categories %}
-                                 <li><input id="check" type="checkbox" name="categories" value="{{ category }}"> {{ category }}</li>
+                                 <li><input id="check" type="checkbox" name="categories" value="{{ category }}">{{ category }}</li>
                                 {% endfor %}
                             </ul>
                         </div>

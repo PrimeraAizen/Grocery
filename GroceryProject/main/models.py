@@ -26,5 +26,8 @@ class Product(models.Model):
     def get_absolute_url(self):
         return reverse('product_detail', args=[str(self.id)])
     
-    
 
+    # function to return the first 2 sentences of the description
+    def short_description(self):
+        sentences = self.description.split('.')[0:2]
+        return '.'.join(sentences) + '.'
