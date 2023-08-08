@@ -17,21 +17,16 @@ def index(request):
 def shop(request):
     products = Product.objects.all()
     category_list = products.values_list('category', flat=True).distinct()
-    search = request.GET.get('search')
-    categories = request.GET.getlist('categories') 
-    sorting = request.GET.get('sorting')
-    if sorting:
-        if sorting == 'increasing':
-            products = products.order_by('price')
-        elif sorting == 'decreasing':
-            products = products.order_by('-price')
-        elif sorting == 'top':
-            products = products.order_by('-stock')
-    if search:
-        products = products.filter(Q(name__icontains=search) | Q(description__icontains=search))
-    if categories:
-        for category in categories:
-            products = products.filter(category=category)
+    search = request.GET.get('search') if request.GET.get('search') else ''
+    categories = request.GET.getlist('categories') if request.GET.get('categories') else ''
+    sorting = request.GET.get('sorting') if request.GET.get('sorting') else ''
+    products = products.filter((Q(name__icontains=search) | Q(description__icontains=search)) & Q(category__in=categories))
+    if sorting == 'increasing':
+        products = products.order_by('price')
+    elif sorting == 'decreasing':
+        products = products.order_by('-price')
+    elif sorting == 'top':
+        products = products.order_by('-stock')
     return render(request, 'main/shop.html', {'products': products, 'categories': category_list})
 
 

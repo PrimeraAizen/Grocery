@@ -187,11 +187,12 @@
 
                         <div class="shop-widget">
                             <h3 class="shop-title">Категории</h3>
-                            <ul class="shop-link">
+                            <form class="shop-link">
                                 {% for category in categories %}
                                 <li><input id="check" type="checkbox" name="categories" value="{{ category }}"> {{ category }}</li>
                                 {% endfor %}
-                            </ul>
+                                <button type="submit">Submit</button>
+                            </form>
                         </div>
 
                         <script>
