@@ -1,7 +1,7 @@
 {% extends 'main/index.html' %}
 {% block main %}
 <main>
-{% load static %}
+    {% load static %}
     <!-- breadcrumb-area-start -->
     <section class="breadcrumb-area" data-background="{% static 'main/img/bg/page-title.png' %}">
         <div class="container">
@@ -42,23 +42,25 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home"
                                             role="tab" aria-controls="home" aria-selected="true"><i
-                                                class="fas fa-list-ul"></i> </a>
+                                                class="fas fa-th-large"></i></a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile"
                                             role="tab" aria-controls="profile" aria-selected="false"><i
-                                                class="fas fa-th-large"></i></a>
+                                                class="fas fa-list-ul"></i> </a>
                                     </li>
                                 </ul>
                             </div>
                             <div class="pro-filter mb-40 f-right">
-                                <form action="{% url 'shop' %}" method="post">
-                                    <select name="pro-filter" id="pro-filter">
+                                <form action="{% url 'shop' %}" method="GET">
+                                    
+                                    <select name="sorting" id="pro-filter">
                                         <option value="default">Сортировка</option>
                                         <option value="top">Топ продукты</option>
                                         <option value="increasing">С мин по макс</option>
                                         <option value="decreasing">С макс по мин</option>
                                     </select>
+                                    <input type="submit" value="Select">
                                 </form>
                             </div>
                         </div>
@@ -145,7 +147,7 @@
                                                 <span class="old-price">₸230.00 KZT</span>
                                             </div>
                                         </div>
-                                        <p>{{ product.description }}</p>
+                                        <p>{{ product.short_description }}</p>
                                         <div class="product-action">
                                             <a href="#" title="Shopping Cart">
                                                 <i class="flaticon-shopping-cart"></i>
@@ -163,7 +165,7 @@
                     </div>
                     <div class="basic-pagination basic-pagination-2 text-center mt-20">
                         <ul>
-                            <li ><a href="#"><i class="fas fa-angle-double-left"></i></a></li>
+                            <li><a href="#"><i class="fas fa-angle-double-left"></i></a></li>
                             <li class="active"><a href="#">01</a></li>
                             <li><a href="#">02</a></li>
                             <li><a href="#">03</a></li>
@@ -177,9 +179,9 @@
 
                         <div class="shop-widget">
                             <h3 class="shop-title">Искать</h3>
-                            <form class="shop-search" onsubmit="myFunc()">
+                            <form class="shop-search">
                                 <input id="search" type="text" placeholder="......" name="search">
-                                <button onclick="myFunc()"><i class="fa fa-search"></i></button>
+                                <button onclick="sendCategory()"><i class="fa fa-search"></i></button>
                             </form>
                         </div>
 
@@ -187,13 +189,26 @@
                             <h3 class="shop-title">Категории</h3>
                             <ul class="shop-link">
                                 {% for category in categories %}
-                                 <li><input id="check" type="checkbox" name="categories" value="{{ category }}">{{ category }}</li>
+                                <li><input id="check" type="checkbox" name="categories" value="{{ category }}"> {{ category }}</li>
                                 {% endfor %}
                             </ul>
                         </div>
 
                         <script>
-                            function myFunc(){
+                            function myFunc() {
+                                let checkboxes = document.querySelectorAll('#check');
+                                let checked = [];
+                                for (let i = 0; i < checkboxes.length; i++) {
+                                    if (checkboxes[i].checked) {
+                                        checked.push(checkboxes[i].value);
+                                    }
+                                }
+                                let search = document.querySelector('#search').value;
+                                let url = "{% url 'shop' %}?search=" + search + "&categories=" + checked;
+                                window.location.assign(url);
+                            }
+
+                            function sendCategory() {
                                 let checkboxes = document.querySelectorAll('#check');
                                 let checked = [];
                                 for (let i = 0; i < checkboxes.length; i++) {
