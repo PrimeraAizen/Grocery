@@ -102,3 +102,7 @@ def profile(request):
 def logoutUser(request):
     logout(request)
     return redirect('index')
+
+def checkout(request):
+    return render(request, 'main/checkout.html')
+
