@@ -253,8 +253,12 @@
                                                         </a>
                                                     </div>
                                                     <div class="sale-tag">
+                                                        {% if product.new %}
                                                         <span class="new">new</span>
+                                                        {% endif %}
+                                                        {% if product.sale %}
                                                         <span class="sale">sale</span>
+                                                        {% endif %}
                                                     </div>
                                                 </div>
                                                 <div class="product-content">

@@ -16,7 +16,10 @@ class Product(models.Model):
     brands = models.CharField(max_length=100)
     code = models.CharField(max_length=100)
     reward_points = models.IntegerField()
-
+    old_price = models.FloatField(blank=True, null=True)
+    new = models.BooleanField(default=False)
+    sale = models.BooleanField(default=False)
+    
     class Meta:
         db_table = 'product'
         verbose_name = 'Product'

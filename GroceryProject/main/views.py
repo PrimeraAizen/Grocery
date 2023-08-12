@@ -20,7 +20,7 @@ def shop(request):
     search = request.GET.get('search') if request.GET.get('search') else ''
     categories = request.GET.getlist('categories') if request.GET.get('categories') else ''
     sorting = request.GET.get('sorting') if request.GET.get('sorting') else ''
-    products = products.filter((Q(name__icontains=search) | Q(description__icontains=search)) & Q(category__in=categories))
+    products = products.filter((Q(name__icontains=search) | Q(description__icontains=search)) & Q(category__in=categories) if categories else Q(name__icontains=search) | Q(description__icontains=search))
     if sorting == 'increasing':
         products = products.order_by('price')
     elif sorting == 'decreasing':
@@ -43,13 +43,13 @@ def about(request):
 
 # New products.
 def new_products(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(new=True)
     return render(request, 'main/shop-filter.html', {'products': products})
 
 
 # Sales
 def sales(request):
-    products = Product.objects.all()
+    products = Product.objects.filter(Q(sale=True) and Q(old_price__isnull=False))
     return render(request, 'main/shop-filter2.html', {'products': products})
 
 @unauthenticated_user
@@ -94,7 +94,8 @@ def cart(request):
 
 def product(request, pk):
     product = Product.objects.get(id=pk)
-    return render(request, 'main/product-simple.html', {'product': product})
+    products = Product.objects.all()
+    return render(request, 'main/product-simple.html', {'product': product, 'products': products})
 
 def profile(request):
     pass

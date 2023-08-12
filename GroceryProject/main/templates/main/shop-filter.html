@@ -129,8 +129,12 @@
                                             </a>
 
                                             <div class="sale-tag">
-                                                <span class="new">new</span>
-                                                <span class="sale">sale</span>
+                                                {% if product.new %}
+                                                    <span class="new">new</span>
+                                                {% endif %}
+                                                {% if product.sale %}
+                                                    <span class="sale">sale</span>
+                                                {% endif %}
                                             </div>
                                         </div>
                                         <div class="product-content">
@@ -142,8 +146,10 @@
                                             </h4>
                                             <div class="product-meta">
                                                 <div class="pro-price">
-                                                    <span>${{ product.price }} KZT</span>
-                                                    <span class="old-price">{{ product.price }} KZT</span>
+                                                    <span>₸{{ product.price }} KZT</span>
+                                                    {% if product.old_price and product.old_price > product.price %}
+                                                    <span class="old-price">₸{{ product.old_price }} KZT</span>
+                                                    {% endif %}
                                                 </div>
                                             </div>
                                         </div>
