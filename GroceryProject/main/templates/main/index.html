@@ -263,7 +263,7 @@
                                                 </div>
                                                 <div class="product-content">
                                                     <div class="pro-cat mb-10">
-                                                        <a href="shop.html">{{ product.category }}</a>
+                                                        <a href="{% url 'shop_category' product.category %}">{{ product.category }}</a>
                                                     </div>
                                                     <h4>
                                                         <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
@@ -337,7 +337,7 @@
                     <div class="col-xl-5 col-lg-6 col-md-6 ">
                         <div class="footer-widget mb-40 pr-70">
                             <div class="footer-logo">
-                                <a href="index.html"><img src="{% static 'main/img/logo/footer-logo.png' %}" alt=""></a>
+                                <a href="{% url 'index' %}"><img src="{% static 'main/img/logo/footer-logo.png' %}" alt=""></a>
                             </div>
                             <p>Витаминный уголок – ваш источник свежих фруктов и овощей, приготовленных для вашего
                                 здоровья и благополучия. Мы являемся вашим надежным партнером в поиске натуральных и

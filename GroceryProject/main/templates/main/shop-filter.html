@@ -15,7 +15,7 @@
                     <div class="breadcrumb-text text-center">
                         <h1>Новинки</h1>
                         <ul class="breadcrumb-menu">
-                            <li><a href="index.html">Главная страница</a></li>
+                            <li><a href="{% url 'index' %}">Главная страница</a></li>
                             <li><span>Новинки</span></li>
                         </ul>
                     </div>
@@ -139,7 +139,7 @@
                                         </div>
                                         <div class="product-content">
                                             <div class="pro-cat mb-10">
-                                                <a href="shop.html">{{ product.category }}</a>
+                                                <a href="{% url 'shop_category' product.category %}">{{ product.category }}</a>
                                             </div>
                                             <h4>
                                                 <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>

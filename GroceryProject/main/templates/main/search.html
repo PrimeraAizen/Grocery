@@ -10,7 +10,7 @@
                     <div class="breadcrumb-text text-center">
                         <h1>Каталог</h1>
                         <ul class="breadcrumb-menu">
-                            <li><a href="index.html">Главная страница</a></li>
+                            <li><a href="{% url 'index' %}">Главная страница</a></li>
                             <li><span>Каталог</span></li>
                         </ul>
                     </div>
@@ -52,15 +52,15 @@
                                 </ul>
                             </div>
                             <div class="pro-filter mb-40 f-right">
-                                <form method="POST">
-                                    {% csrf_token %}
+                                <form action="{% url 'shop' %}" method="GET">
+                                    
                                     <select name="sorting" id="pro-filter">
                                         <option value="default">Сортировка</option>
                                         <option value="top">Топ продукты</option>
                                         <option value="increasing">С мин по макс</option>
                                         <option value="decreasing">С макс по мин</option>
                                     </select>
-                                    <input type="submit" value="select">
+                                    <input type="submit" value="Select">
                                 </form>
                             </div>
                         </div>
@@ -92,15 +92,15 @@
                                             <div class="sale-tag">
                                                 {% if product.new %}
                                                 <span class="new">new</span>
-                                                {% endif %}
-                                                {% if product.sale %}
+                                            {% endif %}
+                                            {% if product.sale %}
                                                 <span class="sale">sale</span>
-                                                {% endif %}
+                                            {% endif %}
                                             </div>
                                         </div>
                                         <div class="product-content">
                                             <div class="pro-cat mb-10">
-                                                <a href="{% url 'shop_category' product.category %}">{{ product.category }}</a>
+                                                <a href="{% url 'shop' %}">{{ product.category }}</a>
                                             </div>
                                             <h4>
                                                 <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
@@ -134,10 +134,10 @@
                                             </a>
                                             <div class="sale-tag">
                                                 {% if product.new %}
-                                                <span class="new">new</span>
+                                                    <span class="new">new</span>
                                                 {% endif %}
                                                 {% if product.sale %}
-                                                <span class="sale">sale</span>
+                                                    <span class="sale">sale</span>
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -191,16 +191,15 @@
 
                         <div class="shop-widget">
                             <h3 class="shop-title">Искать</h3>
-                            <form class="shop-search" action="{% url 'search' %}" method="get">
-                                <input id="search" type="text" placeholder="......" name="q">
-                                <button type="submit"><i class="fa fa-search"></i></button>
+                            <form class="shop-search">
+                                <input id="search" type="text" placeholder="......" name="search">
+                                <button onclick="sendCategory()"><i class="fa fa-search"></i></button>
                             </form>
                         </div>
 
                         <div class="shop-widget">
                             <h3 class="shop-title">Категории</h3>
-                            <form class="shop-link" method="post">
-                                {% csrf_token %}
+                            <form class="shop-link">
                                 {% for category in categories %}
                                 <li><input id="check" type="checkbox" name="categories" value="{{ category }}"> {{ category }}</li>
                                 {% endfor %}
@@ -209,38 +208,18 @@
                         </div>
 
                         <script>
-                            // write a function to send sorting via POST request using AJAX
-
-                            // document.querySelector("#pro-filter").addEventListener("change", function () {
-                            //     // Get the selected value from the <select> element
-                            //     let selectedValue = this.value;
-
-                            //     // Create an HTTP request (you can also use libraries like fetch or Axios)
-                            //     let xhr = new XMLHttpRequest();
-
-                            //     // Configure the request
-                            //     xhr.open("POST", "{% url 'search' %}", true);
-                            //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-                            //     // Define a callback function to handle the response
-                            //     xhr.onreadystatechange = function () {
-                            //         if (xhr.readyState === XMLHttpRequest.DONE) {
-                            //             if (xhr.status === 200) {
-                            //                 // Request was successful, do something with the response
-                            //                 console.log("Data sent successfully!");
-                            //             } else {
-                            //                 // Request failed, handle the error
-                            //                 console.error("Error sending data:", xhr.statusText);
-                            //             }
-                            //         }
-                            //     };
-
-                            //     // Send the selected value to the server
-                            //     xhr.send("sorting=" + encodeURIComponent(selectedValue));
-                            // });
-
-
-
+                            function myFunc() {
+                                let checkboxes = document.querySelectorAll('#check');
+                                let checked = [];
+                                for (let i = 0; i < checkboxes.length; i++) {
+                                    if (checkboxes[i].checked) {
+                                        checked.push(checkboxes[i].value);
+                                    }
+                                }
+                                let search = document.querySelector('#search').value;
+                                let url = "{% url 'shop' %}?search=" + search + "&categories=" + checked;
+                                window.location.assign(url);
+                            }
 
                             function sendCategory() {
                                 let checkboxes = document.querySelectorAll('#check');

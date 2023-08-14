@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Q
 from users.models import CustomUser
+from django.views.decorators.csrf import csrf_exempt
 
 # Main page.
 def index(request):
@@ -16,20 +17,45 @@ def index(request):
 # Shop page.
 def shop(request):
     products = Product.objects.all()
-    category_list = products.values_list('category', flat=True).distinct()
-    search = request.GET.get('search') if request.GET.get('search') else ''
-    categories = request.GET.getlist('categories') if request.GET.get('categories') else ''
-    sorting = request.GET.get('sorting') if request.GET.get('sorting') else ''
-    products = products.filter((Q(name__icontains=search) | Q(description__icontains=search)) & Q(category__in=categories) if categories else Q(name__icontains=search) | Q(description__icontains=search))
+    sorting = request.POST.get('sorting') if request.POST.get('sorting') else ''
     if sorting == 'increasing':
         products = products.order_by('price')
     elif sorting == 'decreasing':
         products = products.order_by('-price')
     elif sorting == 'top':
         products = products.order_by('-stock')
-    return render(request, 'main/shop.html', {'products': products, 'categories': category_list})
+    categories = products.values_list('category', flat=True).distinct()
+    category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
+    products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
+    
+    return render(request, 'main/shop.html', {'products': products, 'categories': categories})
 
+def search(request):
+    products = Product.objects.filter((Q(name__icontains=request.GET.get('q')) | Q(description__icontains=request.GET.get('q'))) & Q(category__in=request.POST.getlist('categories')) if request.POST.getlist('categories') else Q(name__icontains=request.GET.get('q')) | Q(description__icontains=request.GET.get('q')))
+    sorting = request.POST.get('sorting') if request.POST.get('sorting') else ''
+    category_list = products.values_list('category', flat=True).distinct()
+    if sorting == 'increasing':
+        products = products.order_by('price')
+    elif sorting == 'decreasing':
+        products = products.order_by('-price')
+    elif sorting == 'top':
+        products = products.order_by('-stock')
+    return render(request, 'main/shop.html', {'products': products, 'categories': category_list, 'search': request.GET.get('q'), 'sorting': sorting})
 
+# Shop page by category.
+def shop_category(request, category):
+    products = Product.objects.filter(category=category)
+    sorting = request.POST.get('sorting') if request.POST.get('sorting') else ''
+    if sorting == 'increasing':
+        products = products.order_by('price')
+    elif sorting == 'decreasing':
+        products = products.order_by('-price')
+    elif sorting == 'top':
+        products = products.order_by('-stock')
+    categories = products.values_list('category', flat=True).distinct()
+    category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
+    products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
+    return render(request, 'main/shop.html', {'products': products, 'categories': categories})
 
 # Contact page.
 def contact(request):

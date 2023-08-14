@@ -37,8 +37,9 @@ class Product(models.Model):
         sentences = self.description.split('.')[0:2]
         return '.'.join(sentences) + '.'
     
-class Profile(models.Model):
+class Customers(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
     country = models.CharField(max_length=100)
@@ -46,19 +47,18 @@ class Profile(models.Model):
     phone = models.CharField(max_length=100)
     
     class Meta:
-        db_table = 'profile'
-        verbose_name = 'Profile'
-        verbose_name_plural = 'Profiles'
+        db_table = 'customers'
+        verbose_name = 'Customer'
+        verbose_name_plural = 'Customers'
     
     def __str__(self):
         return self.user.email
 
 
 class Order(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    items = models.ManyToManyField('Product')
+    user = models.ForeignKey(Customers, on_delete=models.CASCADE)
     ordered_date = models.DateTimeField(auto_now_add=True)
-    ordered = models.BooleanField(default=False)
+    complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100)
     
     class Meta:
@@ -67,7 +67,7 @@ class Order(models.Model):
         verbose_name_plural = 'Orders'
     
     def __str__(self):
-        return self.user.email
+        return str(self.id)
     
     def get_total(self):
         return sum([item.price for item in self.items.all()])
@@ -82,7 +82,6 @@ class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     item = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    ordered = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = 'order_item'
@@ -102,7 +101,7 @@ class OrderItem(models.Model):
         return reverse('cart')
     
 class ShippingAddress(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(Customers, on_delete=models.CASCADE)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
