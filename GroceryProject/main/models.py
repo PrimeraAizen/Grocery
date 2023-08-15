@@ -56,7 +56,7 @@ class Customers(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(Customers, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
     ordered_date = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100)
@@ -69,19 +69,21 @@ class Order(models.Model):
     def __str__(self):
         return str(self.id)
     
-    def get_total(self):
-        return sum([item.price for item in self.items.all()])
+    def get_cart_total(self):
+        order_items = self.orderitem_set.all()
+        return sum([item.get_total() for item in order_items])
     
-    def get_total_items(self):
-        return sum([item.stock for item in self.items.all()])
+    def get_cart_items(self):
+        order_items = self.orderitem_set.all()
+        return sum([item.quantity for item in order_items])
     
     def get_absolute_url(self):
         return reverse('cart')
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    item = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)
     date_added = models.DateTimeField(auto_now_add=True)
     class Meta:
         db_table = 'order_item'
@@ -89,13 +91,13 @@ class OrderItem(models.Model):
         verbose_name_plural = 'Order Items'
     
     def __str__(self):
-        return self.item.name
+        return self.product.name
     
     def get_total(self):
-        return self.item.price * self.quantity
+        return self.product.price * self.quantity
     
     def get_total_items(self):
-        return self.item.stock * self.quantity
+        return self.product.stock * self.quantity
     
     def get_absolute_url(self):
         return reverse('cart')

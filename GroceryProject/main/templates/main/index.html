@@ -118,10 +118,50 @@
                                             {% endif %}
                                             <i class="far fa-user"></i></a>
                                 </li>
-                                <li class="d-shop-cart"><a href="{% url 'cart' %}"><i
-                                            class="flaticon-shopping-cart"></i></a>
-
+                                <li class="d-shop-cart"><a href="#"><i class="flaticon-shopping-cart"></i> <span
+                                    class="cart-count">{{ order.get_cart_items }}</span></a>
+                            <ul class="minicart">
+                                {% for item in items %}
+                                <li>
+                                    <div class="cart-img">
+                                        <a href="{{ item.product.get_absolute_url }}">
+                                            <img src="{{ item.product.image.url }}" alt="" />
+                                        </a>
+                                    </div>
+                                    <div class="cart-content">
+                                        <h4>
+                                            <a href="{{ product.get_absolute_url }}">{{ item.product.name|truncatechars:15 }} x {{ item.quantity }}</a>
+                                        </h4>
+                                        <div class="cart-price">
+                                            <span class="new">₸ {{ item.get_total }}</span>
+                                            {% if item.product.old_price and item.product.old_price > item.product.price %}
+                                            <span>
+                                                <del>$239.9</del>
+                                            </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="del-icon">
+                                        <a href="{% url 'remove_from_cart' item.id %}">
+                                            <i class="far fa-trash-alt"></i>
+                                        </a>
+                                    </div>
                                 </li>
+                                {% endfor %}
+                                <li>
+                                    <div class="total-price">
+                                        <span class="f-left">Total:</span>
+                                        <span class="f-right">₸{{ order.get_cart_total }}</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkout-link">
+                                        <a href="{% url 'cart' %}">Shopping Cart</a>
+                                        <a class="red-color" href="{% url 'checkout' %}">Checkout</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
                             </ul>
                         </div>
                     </div>
@@ -241,7 +281,7 @@
                                                         <img class="secondary-img" src="{{ product.image.url }}" alt="">
                                                     </a>
                                                     <div class="product-action text-center">
-                                                        <a href="#" title="Shopping Cart">
+                                                        <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
                                                             <i class="flaticon-shopping-cart"></i>
                                                         </a>
                                                         <a href="#" title="Quick View">
