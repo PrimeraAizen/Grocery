@@ -78,7 +78,7 @@
                                                 <img class="secondary-img" src="{{ product.image.url }}" alt="">
                                             </a>
                                             <div class="product-action text-center">
-                                                <a href="#" title="Shoppingb Cart">
+                                                <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
                                                     <i class="flaticon-shopping-cart"></i>
                                                 </a>
                                                 <a href="#" title="Quick View">
@@ -161,7 +161,7 @@
                                         </div>
                                         <p>{{ product.short_description }}</p>
                                         <div class="product-action">
-                                            <a href="#" title="Shopping Cart">
+                                            <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
                                                 <i class="flaticon-shopping-cart"></i>
                                             </a>
                                             <a href="#" title="Quick View">

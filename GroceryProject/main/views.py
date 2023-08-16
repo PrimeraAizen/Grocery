@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from main.utils import get_cart
 from main.decorators import unauthenticated_user
 from main.models import Product, Order, OrderItem, ShippingAddress, Customers
 from django.contrib.auth import authenticate, login, logout
@@ -11,20 +12,19 @@ from django.views.decorators.csrf import csrf_exempt
 # Main page.
 def index(request):
     products = Product.objects.all()
-    if request.user.is_authenticated:
-        customer = Customers.objects.get(user=request.user)
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-    else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0}
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
     return render(request, 'main/index.html', {'products': products, 'items': items, 'order': order})
 
 # Page for product.
 def product(request, pk):
     product = Product.objects.get(id=pk)
     products = Product.objects.all()
-    return render(request, 'main/product-simple.html', {'product': product, 'products': products})
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/product-simple.html', {'product': product, 'products': products, 'items': items, 'order': order})
 
 # Shop page.
 def shop(request):
@@ -39,8 +39,10 @@ def shop(request):
     categories = products.values_list('category', flat=True).distinct()
     category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
     products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
-    
-    return render(request, 'main/shop.html', {'products': products, 'categories': categories})
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/shop.html', {'products': products, 'categories': categories, 'items': items, 'order': order, 'sorting': sorting})
 
 # Search page.
 def search(request):
@@ -68,17 +70,26 @@ def shop_category(request, category):
     categories = products.values_list('category', flat=True).distinct()
     category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
     products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
-    return render(request, 'main/shop.html', {'products': products, 'categories': categories})
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/shop.html', {'products': products, 'categories': categories, 'items': items, 'order': order, 'sorting': sorting})
 
 # New products.
 def new_products(request):
     products = Product.objects.filter(new=True)
-    return render(request, 'main/shop-filter.html', {'products': products})
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/shop-filter.html', {'products': products, 'items': items, 'order': order})
 
 # Page for sales.
 def sales(request):
     products = Product.objects.filter(Q(sale=True) and Q(old_price__isnull=False))
-    return render(request, 'main/shop-filter2.html', {'products': products})
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/shop-filter2.html', {'products': products, 'items': items, 'order': order})
 
 # Page for login.
 @unauthenticated_user
@@ -122,14 +133,9 @@ def logoutUser(request):
 
 # Cart page.
 def cart(request):
-    if request.user.is_authenticated:
-        customer = Customers.objects.get(user=request.user)
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        items = order.orderitem_set.all()
-    else:
-        items = []
-        order = {'get_cart_total': 0, 'get_cart_items': 0}
-
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
     return render(request, 'main/cart.html', {'items': items, 'order': order})
 
 # Adding products to cart
@@ -152,12 +158,22 @@ def profile(request):
     pass
 
 def checkout(request):
-    return render(request, 'main/checkout.html')
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/checkout.html', {'items': items, 'order': order})
 
 # Contact page.
 def contact(request):
-    return render(request, 'main/contact.html')
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/contact.html', {'items': items, 'order': order})
 
 # About page.
 def about(request):
-    return render(request, 'main/about.html')
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    return render(request, 'main/about.html', {'items': items, 'order': order})
+

@@ -89,6 +89,7 @@
 
                                     <li>
                                         <a href="#">Кабинет</a>
+                                        {% if not request.user.is_authenticated %}
                                         <ul class="submenu">
                                             <li>
                                                 <a href="{% url 'login' %}">Войти</a>
@@ -99,6 +100,7 @@
 
 
                                         </ul>
+                                        {% endif %}
                                     </li>
                                     <li>
                                         <a href="{% url 'about' %}">О нас</a>
