@@ -48,7 +48,7 @@
                                         <td class="product-name"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
                                         <td class="product-price"><span class="amount">₸{{ item.product.price }}</span></td>
                                         <td class="product-quantity">
-                                            <div class="cart-plus-minus"><input type="text" value="{{ item.quantity }}"/></div>
+                                            <div class="cart-plus-minus"><input id="update_cart" type="text" value="{{ item.quantity }}"/></div>
                                         </td>
                                         <td class="product-subtotal"><span class="amount">₸{{ item.get_total }}</span></td>
                                         <td class="product-remove"><a href="{% url 'remove_from_cart' item.id %}"><i class="fa fa-times"></i></a></td>
@@ -67,8 +67,8 @@
                                             coupon</button>
                                     </div>
                                     <div class="coupon2">
-                                        <input class="btn theme-btn" name="update_cart" value="Update cart"
-                                            type="submit">
+                                        <input id="cart_update" class="btn theme-btn" name="update_cart" value="Update cart"
+                                            type="button">
                                     </div>
                                 </div>
                             </div>
@@ -94,4 +94,5 @@
 
 
 </main>
+
 {% endblock %}

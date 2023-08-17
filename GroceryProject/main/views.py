@@ -132,6 +132,7 @@ def logoutUser(request):
     return redirect('index')
 
 # Cart page.
+@csrf_exempt
 def cart(request):
     cart = get_cart(request)
     items = cart['items']
@@ -153,6 +154,13 @@ def remove_from_cart(request, pk):
     order_item.delete()
     return redirect('cart')
 
+# Changing quantity of products in cart
+def change_item_quantity(request, pk):
+    order_item = OrderItem.objects.get(id=pk)
+    if request.POST.get('quantity'):
+        order_item.quantity = request.POST.get('quantity')
+        order_item.save()
+    return redirect('cart')
 
 def profile(request):
     pass

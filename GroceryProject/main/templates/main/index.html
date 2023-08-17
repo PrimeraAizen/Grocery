@@ -120,7 +120,7 @@
                                             {% endif %}
                                             <i class="far fa-user"></i></a>
                                 </li>
-                                <li class="d-shop-cart"><a href="#"><i class="flaticon-shopping-cart"></i> <span
+                                <li class="d-shop-cart"><a href="{% url 'cart' %}"><i class="flaticon-shopping-cart"></i> <span
                                     class="cart-count">{{ order.get_cart_items }}</span></a>
                             <ul class="minicart">
                                 {% for item in items %}
@@ -138,7 +138,7 @@
                                             <span class="new">₸ {{ item.get_total }}</span>
                                             {% if item.product.old_price and item.product.old_price > item.product.price %}
                                             <span>
-                                                <del>$239.9</del>
+                                                <del>₸{{ item.product.old_price }}</del>
                                             </span>
                                             {% endif %}
                                         </div>
