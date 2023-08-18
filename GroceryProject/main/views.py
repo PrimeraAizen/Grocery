@@ -169,7 +169,11 @@ def checkout(request):
     cart = get_cart(request)
     items = cart['items']
     order = cart['order']
-    return render(request, 'main/checkout.html', {'items': items, 'order': order})
+    if request.user.is_authenticated:
+        customer = Customers.objects.get(user=request.user)
+    else:
+        customer = None
+    return render(request, 'main/checkout.html', {'items': items, 'order': order, 'customer': customer})
 
 # Contact page.
 def contact(request):
