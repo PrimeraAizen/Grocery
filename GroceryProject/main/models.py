@@ -24,6 +24,7 @@ class Product(models.Model):
         db_table = 'product'
         verbose_name = 'Product'
         verbose_name_plural = 'Products'
+        ordering = ['-id']
 
     def __str__(self):
         return self.name
@@ -54,13 +55,19 @@ class Customers(models.Model):
     def __str__(self):
         return self.user.email
 
+    def get_first_name(self):
+        return self.name.split(' ')[0]
+    
+    def get_last_name(self):
+        return self.name.split(' ')[1]
+    
+
 
 class Order(models.Model):
     customer = models.ForeignKey(Customers, on_delete=models.CASCADE)
     ordered_date = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False)
     transaction_id = models.CharField(max_length=100)
-    
     class Meta:
         db_table = 'order'
         verbose_name = 'Order'
@@ -110,6 +117,7 @@ class ShippingAddress(models.Model):
     country = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
+    order_notes = models.TextField(blank=True, null=True)
     
     class Meta:
         db_table = 'shipping_address'
@@ -117,7 +125,7 @@ class ShippingAddress(models.Model):
         verbose_name_plural = 'Shipping Addresses'
     
     def __str__(self):
-        return self.user.email
+        return self.user.user.email
     
     def get_absolute_url(self):
         return reverse('cart')

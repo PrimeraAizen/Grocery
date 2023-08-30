@@ -87,7 +87,8 @@
     <!-- checkout-area start -->
     <section class="checkout-area pb-70">
         <div class="container">
-            <form action="#">
+            <form action="{% url 'checkout' %}" method="post">
+                {% csrf_token %}
                 <div class="row">
                     <div class="col-lg-6">
                         <div class="checkbox-form">
@@ -96,7 +97,7 @@
                                 <div class="col-md-12">
                                     <div class="country-select">
                                         <label>Country <span class="required">*</span></label>
-                                        <select name="Country" id="country-select">
+                                        <select name="country" id="country-select">
                                             <option value="Kazakhstan">Kazakhstan</option>
                                             <option value="Russia">Russia</option>
                                             <option value="Uzbekistan">Uzbekistan</option>
@@ -109,60 +110,53 @@
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>First Name <span class="required">*</span></label>
-                                        <input type="text" name="first_name" id="first_name" required>
+                                        <input type="text" name="first_name" id="first_name" value="{{ customer.get_first_name }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Last Name <span class="required">*</span></label>
-                                        <input type="text" placeholder="" name="last_name" id="last_name" required>
+                                        <input type="text" name="last_name" id="last_name" value="{{ customer.get_last_name }}">
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <label>Address <span class="required">*</span></label>
-                                        <input type="text" placeholder="Street address" required>
+                                        <input type="text" placeholder="Street address" name="address" id="address"  value="{{ customer.address }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <input type="text" placeholder="Apartment, suite, unit etc. (optional)"
-                                            required>
+                                            id="apartment" name="apartment" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="checkout-form-list">
                                         <label>Town / City <span class="required">*</span></label>
-                                        <input type="text" placeholder="Town / City" required>
+                                        <input type="text" placeholder="Town / City" name="city" id="city" value="{{ customer.city }}" required>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="checkout-form-list">
-                                        <label>State<span class="required">*</span></label>
-                                        <input type="text" name="state" id="state" required>
-                                    </div>
-                                </div>
+                                
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Postcode / Zip <span class="required">*</span></label>
-                                        <input type="text" placeholder="Postcode / Zip" required>
+                                        <input type="text" placeholder="Postcode / Zip" name="postal_code" id="postal_code" value="{{ customer.postal_code }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Email Address <span class="required"></span></label>
-                                        {% if request.user.is_authenticated %}
+                                        
                                         <input type="email" placeholder="Email" name="email" id="email"
                                             value="{{ request.user.email }}" required>
-                                        {% else %}
-                                        <input type="email" placeholder="Email" name="email" id="email" required>
-                                        {% endif %}
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="checkout-form-list">
                                         <label>Phone <span class="required">*</span></label>
-                                        <input type="text" placeholder="Phone" name="phone" id="phone" required>
+                                        <input type="text" placeholder="Phone" name="phone" id="phone" value="{{ customer.phone }}" required>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
@@ -176,15 +170,16 @@
                                         <p>Create an account by entering the information below. If you are a returning
                                             customer please login at the top of the page.</p>
                                         <label>Account password <span class="required">*</span></label>
-                                        <input type="password" placeholder="password" />
+                                        <input type="password" placeholder="password" required>
                                     </div>
                                 </div>
+                            
                             </div>
                             <div class="different-address">
                                 <div class="ship-different-title">
                                     <h3>
                                         <label>Ship to a different address?</label>
-                                        <input id="ship-box" type="checkbox" />
+                                        <input id="ship-box" type="checkbox">
                                     </h3>
                                 </div>
                                 <div id="ship-box-info">
@@ -192,7 +187,7 @@
                                         <div class="col-md-12">
                                             <div class="country-select">
                                                 <label>Country<span class="required">*</span></label>
-                                                <select name="Country" id="country-select">
+                                                <select name="country2" id="country-select">
                                                     <option value="Kazakhstan">Kazakhstan</option>
                                                     <option value="Russia">Russia</option>
                                                     <option value="Uzbekistan">Uzbekistan</option>
@@ -206,53 +201,47 @@
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label>First Name <span class="required">*</span></label>
-                                                <input type="text" name="first_name" id="first_name">
+                                                <input type="text" name="first_name2" id="first_name2" value="{{ customer.get_first_name }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label>Last Name <span class="required">*</span></label>
-                                                <input type="text" placeholder="" name="last_name" id="last_name">
+                                                <input type="text" name="last_name2" id="last_name2" value="{{ customer.get_last_name }}">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="checkout-form-list">
                                                 <label>Address <span class="required">*</span></label>
-                                                <input type="text" placeholder="Street address" />
+                                                <input type="text" placeholder="Street address" name="street2" id="street2">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="checkout-form-list">
                                                 <input type="text"
-                                                    placeholder="Apartment, suite, unit etc. (optional)" />
+                                                    placeholder="Apartment, suite, unit etc. (optional)" name="apartment2" id="apartment2">
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="checkout-form-list">
                                                 <label>Town / City <span class="required">*</span></label>
-                                                <input type="text" placeholder="Town / City" />
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="checkout-form-list">
-                                                <label>State <span class="required">*</span></label>
-                                                <input type="text" placeholder="" name="state" id="state">
+                                                <input type="text" placeholder="Town / City" name="city2" id="city2">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label>Postcode / Zip <span class="required">*</span></label>
-                                                <input type="text" placeholder="Postcode / Zip" />
+                                                <input type="text" placeholder="Postcode / Zip" name="postal_code2" id="postal_code2">
                                             </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label>Email Address <span class="required"></span></label>
                                                 {% if request.user.is_authenticated %}
-                                                <input type="email" placeholder="Email" name="email" id="email"
+                                                <input type="email" placeholder="Email" name="email2" id="email2"
                                                     value="{{ request.user.email }}" required>
                                                 {% else %}
-                                                <input type="email" placeholder="Email" name="email" id="email"
+                                                <input type="email" placeholder="Email" name="email2" id="email2"
                                                     required>
                                                 {% endif %}
 
@@ -261,7 +250,7 @@
                                         <div class="col-md-6">
                                             <div class="checkout-form-list">
                                                 <label>Phone <span class="required">*</span></label>
-                                                <input type="text" placeholder="Phone" name="phone" id="phone">
+                                                <input type="text" placeholder="Phone" name="phone2" id="phone2">
                                             </div>
                                         </div>
                                     </div>
@@ -269,7 +258,7 @@
                                 <div class="order-notes">
                                     <div class="checkout-form-list">
                                         <label>Order Notes</label>
-                                        <textarea id="checkout-mess" cols="30" rows="10"
+                                        <textarea id="checkout-mess" name="order-notes" cols="30" rows="10"
                                             placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
                                     </div>
                                 </div>
@@ -407,4 +396,8 @@
 
 
 </main>
+
+<script>
+    document.querySelector()
+</script>
 {% endblock %}

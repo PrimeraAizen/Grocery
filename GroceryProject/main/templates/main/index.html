@@ -97,8 +97,15 @@
                                             <li>
                                                 <a href="{% url 'register' %}">Регистрация</a>
                                             </li>
-
-
+                                        </ul>
+                                        {% else %}
+                                        <ul class="submenu">
+                                            <li>
+                                                <a href="{% url 'profile' %}">Профиль</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'logout' %}">Выйти</a>
+                                            </li>
                                         </ul>
                                         {% endif %}
                                     </li>
@@ -121,7 +128,7 @@
                                             <i class="far fa-user"></i></a>
                                 </li>
                                 <li class="d-shop-cart"><a href="{% url 'cart' %}"><i class="flaticon-shopping-cart"></i> <span
-                                    class="cart-count">{{ order.get_cart_items }}</span></a>
+                                    class="cart-count" default="0">{{ order.get_cart_items }}</span></a>
                             <ul class="minicart">
                                 {% for item in items %}
                                 <li>
@@ -286,7 +293,7 @@
                                                         <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
                                                             <i class="flaticon-shopping-cart"></i>
                                                         </a>
-                                                        <a href="#" title="Quick View">
+                                                        <a href="{% url 'product_detail' product.id %}" title="Quick View">
                                                             <i class="flaticon-eye"></i>
                                                         </a>
                                                         <a href="#" data-toggle="tooltip" data-placement="right"
@@ -313,7 +320,9 @@
                                                     <div class="product-meta">
                                                         <div class="pro-price">
                                                             <span>₸{{ product.price }} KZT</span>
-                                                            <span class="old-price">₸230.00 KZT</span>
+                                                            {% if product.sale %}
+                                                            <span class="old-price">₸{{ product.old_price }} KZT</span>
+                                                            {% endif %}
                                                         </div>
                                                     </div>
                                                     <div class="product-wishlist">

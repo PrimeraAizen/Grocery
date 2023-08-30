@@ -81,7 +81,7 @@
                                         <li>Subtotal <span>₸{{ order.get_cart_total }}</span></li>
                                         <li>Total <span>₸{{ order.get_cart_total }}</span></li>
                                     </ul>
-                                    <a class="btn theme-btn" href="#">Proceed to checkout</a>
+                                    <a class="btn theme-btn" href="{% url 'checkout' %}">Proceed to checkout</a>
                                 </div>
                             </div>
                         </div>

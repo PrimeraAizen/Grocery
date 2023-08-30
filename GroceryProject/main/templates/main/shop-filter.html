@@ -164,11 +164,19 @@
             </div>
             <div class="basic-pagination basic-pagination-2 text-center mt-20 mb-0">
                 <ul>
-
-
-                    <li class="active"><a href="#">01</a></li>
-                    <li><a href="#">02</a></li>
-
+                    {% if products.has_previous %}
+                    <li><a href="?page={{ products.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                    {% endif %}
+                    {% for p in products.paginator.page_range %}
+                    {% if products.number == p %}
+                    <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
+                    {% elif p >= products.number|add:-2 and p <= products.number|add:2 %}
+                    <li><a href="?page={{ p }}">{{ p }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+                    {% if products.has_next %}
+                    <li><a href="?page={{ products.next_page_number }}"><i class="fas fa-angle-double-right"></i></a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

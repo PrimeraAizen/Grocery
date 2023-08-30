@@ -177,12 +177,19 @@
                     </div>
                     <div class="basic-pagination basic-pagination-2 text-center mt-20">
                         <ul>
-                            <li><a href="#"><i class="fas fa-angle-double-left"></i></a></li>
-                            <li class="active"><a href="#">01</a></li>
-                            <li><a href="#">02</a></li>
-                            <li><a href="#">03</a></li>
-                            <li><a href="#"><i class="fas fa-ellipsis-h"></i></a></li>
-                            <li><a href="#"><i class="fas fa-angle-double-right"></i></a></li>
+                            {% if products.has_previous %}
+                            <li><a href="?page={{ products.previous_page_number }}"><i class="fas fa-angle-double-left"></i></a></li>
+                            {% endif %}
+                            {% for p in products.paginator.page_range %}
+                            {% if products.number == p %}
+                            <li class="active"><a href="?page={{ p }}">{{ p }}</a></li>
+                            {% elif p >= products.number|add:-2 and p <= products.number|add:2 %}
+                            <li><a href="?page={{ p }}">{{ p }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                            {% if products.has_next %}
+                            <li><a href="?page={{ products.next_page_number }}"><i class="fas fa-angle-double-right"></i></a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -207,62 +214,6 @@
                                 <button type="submit">Submit</button>
                             </form>
                         </div>
-
-                        <script>
-                            // write a function to send sorting via POST request using AJAX
-
-                            // document.querySelector("#pro-filter").addEventListener("change", function () {
-                            //     // Get the selected value from the <select> element
-                            //     let selectedValue = this.value;
-
-                            //     // Create an HTTP request (you can also use libraries like fetch or Axios)
-                            //     let xhr = new XMLHttpRequest();
-
-                            //     // Configure the request
-                            //     xhr.open("POST", "{% url 'search' %}", true);
-                            //     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-                            //     // Define a callback function to handle the response
-                            //     xhr.onreadystatechange = function () {
-                            //         if (xhr.readyState === XMLHttpRequest.DONE) {
-                            //             if (xhr.status === 200) {
-                            //                 // Request was successful, do something with the response
-                            //                 console.log("Data sent successfully!");
-                            //             } else {
-                            //                 // Request failed, handle the error
-                            //                 console.error("Error sending data:", xhr.statusText);
-                            //             }
-                            //         }
-                            //     };
-
-                            //     // Send the selected value to the server
-                            //     xhr.send("sorting=" + encodeURIComponent(selectedValue));
-                            // });
-
-
-
-
-                            function sendCategory() {
-                                let checkboxes = document.querySelectorAll('#check');
-                                let checked = [];
-                                for (let i = 0; i < checkboxes.length; i++) {
-                                    if (checkboxes[i].checked) {
-                                        checked.push(checkboxes[i].value);
-                                    }
-                                }
-                                let search = document.querySelector('#search').value;
-                                let url = "{% url 'shop' %}?search=" + search + "&categories=" + checked;
-                                window.location.assign(url);
-                            }
-                        </script>
-
-
-
-
-
-
-
-
 
                     </div>
                 </div>

@@ -1,14 +1,16 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from main.utils import get_cart
-from main.decorators import unauthenticated_user
+from main.utils import get_cart, paginate
+from main.decorators import unauthenticated_user, cart_not_empty
 from main.models import Product, Order, OrderItem, ShippingAddress, Customers
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Q
 from users.models import CustomUser
 from django.views.decorators.csrf import csrf_exempt
-
+from django.core.paginator import Paginator
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 # Main page.
 def index(request):
     products = Product.objects.all()
@@ -30,19 +32,21 @@ def product(request, pk):
 def shop(request):
     products = Product.objects.all()
     sorting = request.POST.get('sorting') if request.POST.get('sorting') else ''
+    
     if sorting == 'increasing':
         products = products.order_by('price')
     elif sorting == 'decreasing':
         products = products.order_by('-price')
     elif sorting == 'top':
         products = products.order_by('-stock')
-    categories = products.values_list('category', flat=True).distinct()
+    categories = Product.objects.all().values_list('category', flat=True).distinct()
     category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
     products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
     cart = get_cart(request)
     items = cart['items']
     order = cart['order']
-    return render(request, 'main/shop.html', {'products': products, 'categories': categories, 'items': items, 'order': order, 'sorting': sorting})
+    page_products = paginate(request, products)
+    return render(request, 'main/shop.html', {'products': page_products, 'categories': categories, 'items': items, 'order': order, 'sorting': sorting})
 
 # Search page.
 def search(request):
@@ -55,7 +59,11 @@ def search(request):
         products = products.order_by('-price')
     elif sorting == 'top':
         products = products.order_by('-stock')
-    return render(request, 'main/shop.html', {'products': products, 'categories': category_list, 'search': request.GET.get('q'), 'sorting': sorting})
+    cart = get_cart(request)
+    items = cart['items']
+    order = cart['order']
+    page_products = paginate(request, products)
+    return render(request, 'main/shop.html', {'products': page_products, 'categories': category_list, 'search': request.GET.get('q'), 'sorting': sorting, 'items': items, 'order': order})
 
 # Shop page by category.
 def shop_category(request, category):
@@ -73,7 +81,8 @@ def shop_category(request, category):
     cart = get_cart(request)
     items = cart['items']
     order = cart['order']
-    return render(request, 'main/shop.html', {'products': products, 'categories': categories, 'items': items, 'order': order, 'sorting': sorting})
+    page_products = paginate(request, products)
+    return render(request, 'main/shop.html', {'products': page_products, 'categories': categories, 'items': items, 'order': order, 'sorting': sorting})
 
 # New products.
 def new_products(request):
@@ -81,7 +90,8 @@ def new_products(request):
     cart = get_cart(request)
     items = cart['items']
     order = cart['order']
-    return render(request, 'main/shop-filter.html', {'products': products, 'items': items, 'order': order})
+    page_products = paginate(request, products)
+    return render(request, 'main/shop-filter.html', {'products': page_products, 'items': items, 'order': order})
 
 # Page for sales.
 def sales(request):
@@ -89,7 +99,8 @@ def sales(request):
     cart = get_cart(request)
     items = cart['items']
     order = cart['order']
-    return render(request, 'main/shop-filter2.html', {'products': products, 'items': items, 'order': order})
+    page_products = paginate(request, products)
+    return render(request, 'main/shop-filter2.html', {'products': page_products, 'items': items, 'order': order})
 
 # Page for login.
 @unauthenticated_user
@@ -118,9 +129,11 @@ def registerPage(request):
         if user.exists():
             messages.info(request, 'Пользователь с таким email уже существует')
             return render(request, 'main/register.html')
-        if password != password2:
-            messages.info(request, 'Пароли не совпадают')
-            return render(request, 'main/register.html')
+        try:
+            validate_password(password)
+        except ValidationError as e:
+                messages.info(request, e)
+                return render(request, 'main/register.html')
         user = CustomUser.objects.create_user(email=email, password=password)
         user.save()
         return redirect('login')
@@ -165,6 +178,7 @@ def change_item_quantity(request, pk):
 def profile(request):
     pass
 
+@cart_not_empty
 def checkout(request):
     cart = get_cart(request)
     items = cart['items']
@@ -173,6 +187,22 @@ def checkout(request):
         customer = Customers.objects.get(user=request.user)
     else:
         customer = None
+    
+    if request.method == 'POST':
+        order.complete = True
+        order.save()
+        ShippingAddress.objects.create(
+            user=customer,
+            order=order,
+            address=request.POST.get('address'),
+            city=request.POST.get('city'),
+            country=request.POST.get('country'),
+            postal_code=request.POST.get('postal_code'),
+            phone=request.POST.get('phone'),
+            order_notes=request.POST.get('order-notes')
+        )
+        return redirect('index')
+    
     return render(request, 'main/checkout.html', {'items': items, 'order': order, 'customer': customer})
 
 # Contact page.
