@@ -14,6 +14,7 @@ urlpatterns = [
     path('sales/', views.sales, name='sales'),
     path('login/', views.loginPage, name='login'),
     path('register/', views.registerPage, name='register'),
+    path(r'^activate/(?P<uid64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.activate, name='activate'),
     path('cart/', views.cart, name='cart'),
     path('product/<int:pk>/', views.product, name='product_detail'),
     path('profile/', views.profile, name='profile'),

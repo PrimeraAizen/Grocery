@@ -39,7 +39,7 @@
                                 <div class="mt-10"></div>
                                 {% for message in messages %}
                                 <div class="alert alert-{{ message.tags }}">
-                                    {{ message|first }}
+                                    {{ message }}
                                 </div>
                                 {% endfor %}
                                 <button class="btn theme-btn-2 w-100" type="submit">Регистрация</button>

@@ -11,6 +11,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.paginator import Paginator
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from main.tokens import generate_token
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes, force_str
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.http import HttpResponse
+
+
 # Main page.
 def index(request):
     products = Product.objects.all()
@@ -125,6 +134,9 @@ def registerPage(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         password2 = request.POST.get('password2')
+        if password != password2:
+            messages.info(request, 'Пароли не совпадают')
+            return render(request, 'main/register.html')
         user = CustomUser.objects.filter(email=email)
         if user.exists():
             messages.info(request, 'Пользователь с таким email уже существует')
@@ -135,9 +147,40 @@ def registerPage(request):
                 messages.info(request, e)
                 return render(request, 'main/register.html')
         user = CustomUser.objects.create_user(email=email, password=password)
+        messages.success(request, 'Account was created for ' + email + ". Please confirm your email!")
+        user.is_active = False
         user.save()
+
+        current_site = get_current_site(request)
+        email_subject = 'Confirm'
+        message2 = render_to_string('main/email_confirmation.html', {'name': email, 'domain': current_site.domain, 'uid': urlsafe_base64_encode(force_bytes(user.pk)), 'token': generate_token.make_token(user)})
+        activation_message = EmailMessage(
+            email_subject,
+            message2,
+                to=[email],
+            )
+        activation_message.fail_silently = True
+        activation_message.content_subtype = 'html'
+        activation_message.send()
+
         return redirect('login')
     return render(request, 'main/register.html')
+
+def activate(request, uid64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uid64))
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = None
+
+    if user is not None and generate_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return HttpResponse('Thank you for your confirmation. Now you can login.')
+    else:
+        return render(request, 'main/activation_failed.html')
+
 
 # Logout page.
 def logoutUser(request):

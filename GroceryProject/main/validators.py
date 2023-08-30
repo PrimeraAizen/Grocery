@@ -32,15 +32,3 @@ class LowercaseValidator(object):
             "В вашем пароле должно быть как минимум 1 маленькая буква, a-z."
         )
 
-class PasswordsMatchValidator(object):
-    def validate(self, password, password2, user=None):
-        if password != password2:
-            raise ValidationError(
-                _("Пароли не совпадают."),
-                code='passwords_do_not_match',
-            )
-
-    def get_help_text(self):
-        return _(
-            "Пароли не совпадают."
-        )
