@@ -48,7 +48,7 @@
                                         <td class="product-name"><a href="{{ item.product.get_absolute_url }}">{{ item.product.name }}</a></td>
                                         <td class="product-price"><span class="amount">₸{{ item.product.price }}</span></td>
                                         <td class="product-quantity">
-                                            <div class="cart-plus-minus"><input id="update_cart" type="text" value="{{ item.quantity }}"/></div>
+                                            <div class="cart-plus-minus"><input id="update_cart" type="text" value="{{ item.quantity }}" name="{{ item.id }}"></div>
                                         </td>
                                         <td class="product-subtotal"><span class="amount">₸{{ item.get_total }}</span></td>
                                         <td class="product-remove"><a href="{% url 'remove_from_cart' item.id %}"><i class="fa fa-times"></i></a></td>
@@ -63,11 +63,11 @@
                                     <div class="coupon">
                                         <input id="coupon_code" class="input-text" name="coupon_code" value=""
                                             placeholder="Coupon code" type="text">
-                                        <button class="btn theme-btn-2" name="apply_coupon" type="submit">Apply
+                                        <button class="btn theme-btn-2" name="apply_coupon" type="button">Apply
                                             coupon</button>
                                     </div>
                                     <div class="coupon2">
-                                        <input id="cart_update" class="btn theme-btn" name="update_cart" value="Update cart"
+                                        <input id="cart_update" class="btn theme-btn" name="update_cart"  value="Update cart"
                                             type="button">
                                     </div>
                                 </div>
@@ -94,5 +94,52 @@
 
 
 </main>
+<script>
+    const updateBtn = document.querySelector('#cart_update');
+    
+    // const updateUrl = updateBtn[0].getAttribute('href');
+    // console.log(updateUrl);
+    // updateInput.forEach(element => {
+    //     const itemsID = Number(element.getAttribute('name'));
+    //     console.log(itemsID);
+        
+    //     element.addEventListener('change', () => {
+    //         $.ajax({
+    //             url: '{% url "change_item_quantity" %}',
+    //             method: 'POST',
+    //             data: {
+    //                 'id': itemsID,
+    //                 'quantity': element.value
+    //             },
+    //             success: function (data) {
+    //                 console.log('ok');
+    //                 location.reload();
+    //             },
+    //         });
+    //     })
+    // });
+    updateBtn.addEventListener('click', () => {
+        let updateInput = document.querySelectorAll('#update_cart');
+        updateInput.forEach(element => {
+            const itemsID = Number(element.getAttribute('name'));
+            console.log(itemsID);
+            
+            $.ajax({
+                url: '{% url "change_item_quantity" %}',
+                method: 'POST',
+                data: {
+                    'id': itemsID,
+                    'quantity': element.value
+                },
+                success: function (data) {
+                    console.log('ok');
+                    location.reload();
+                },
+            });
+        })
+        
+        
+    })
+</script>
 
 {% endblock %}

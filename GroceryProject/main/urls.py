@@ -23,7 +23,7 @@ urlpatterns = [
     path('shop/<str:category>/', views.shop_category, name='shop_category'),
     path('add_to_cart/<int:pk>/', views.add_to_cart, name='add_to_cart'),
     path('remove_from_cart/<int:pk>/', views.remove_from_cart, name='remove_from_cart'),
-    path('change_item_quantity/<int:pk>/', views.change_item_quantity, name='change_item_quantity'),
+    path('change_item_quantity/', views.change_item_quantity, name='change_item_quantity'),
     path('checkout/', views.checkout, name='checkout'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

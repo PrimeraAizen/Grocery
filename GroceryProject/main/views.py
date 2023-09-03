@@ -41,14 +41,14 @@ def product(request, pk):
 def shop(request):
     products = Product.objects.all()
     sorting = request.POST.get('sorting') if request.POST.get('sorting') else ''
-    
     if sorting == 'increasing':
         products = products.order_by('price')
     elif sorting == 'decreasing':
         products = products.order_by('-price')
     elif sorting == 'top':
         products = products.order_by('-stock')
-    categories = Product.objects.all().values_list('category', flat=True).distinct()
+    categories = products.values_list('category', flat=True).distinct().order_by()
+    print(categories)
     category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
     products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
     cart = get_cart(request)
@@ -211,8 +211,11 @@ def remove_from_cart(request, pk):
     return redirect('cart')
 
 # Changing quantity of products in cart
-def change_item_quantity(request, pk):
-    order_item = OrderItem.objects.get(id=pk)
+@csrf_exempt
+def change_item_quantity(request):
+    print(request.POST.get('id'))
+    print(request.POST.get('quantity'))
+    order_item = OrderItem.objects.get(id=request.POST.get('id'))
     if request.POST.get('quantity'):
         order_item.quantity = request.POST.get('quantity')
         order_item.save()
@@ -234,16 +237,28 @@ def checkout(request):
     if request.method == 'POST':
         order.complete = True
         order.save()
-        ShippingAddress.objects.create(
-            user=customer,
-            order=order,
-            address=request.POST.get('address'),
-            city=request.POST.get('city'),
-            country=request.POST.get('country'),
-            postal_code=request.POST.get('postal_code'),
-            phone=request.POST.get('phone'),
-            order_notes=request.POST.get('order-notes')
-        )
+        if request.POST.get('ship-box'):
+            ShippingAddress.objects.create(
+                user=customer,
+                order=order,
+                address=request.POST.get('address2'),
+                city=request.POST.get('city2'),
+                country=request.POST.get('country2'),
+                postal_code=request.POST.get('postal_code2'),
+                phone=request.POST.get('phone2'),
+                order_notes=request.POST.get('order-notes2')
+            );
+        else:
+            ShippingAddress.objects.create(
+                user=customer,
+                order=order,
+                address=request.POST.get('address'),
+                city=request.POST.get('city'),
+                country=request.POST.get('country'),
+                postal_code=request.POST.get('postal_code'),
+                phone=request.POST.get('phone'),
+                order_notes=request.POST.get('order-notes')
+            )
         return redirect('index')
     
     return render(request, 'main/checkout.html', {'items': items, 'order': order, 'customer': customer})
