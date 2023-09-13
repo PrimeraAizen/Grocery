@@ -21,9 +21,9 @@ urlpatterns = [
     path('logout/', views.logoutUser, name='logout'),
     path('search/', views.search, name='search'),
     path('shop/<str:category>/', views.shop_category, name='shop_category'),
-    path('add_to_cart/<int:pk>/', views.add_to_cart, name='add_to_cart'),
     path('remove_from_cart/<int:pk>/', views.remove_from_cart, name='remove_from_cart'),
     path('change_item_quantity/', views.change_item_quantity, name='change_item_quantity'),
     path('checkout/', views.checkout, name='checkout'),
+    path('update_cart/', views.update_cart, name='update_cart'),
     
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

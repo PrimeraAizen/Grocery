@@ -129,7 +129,7 @@
                 method: 'POST',
                 data: {
                     'id': itemsID,
-                    'quantity': element.value
+                    'quantity': Number(element.value)
                 },
                 success: function (data) {
                     console.log('ok');
@@ -139,7 +139,10 @@
         })
         
         
-    })
+    });
+
+   
+
 </script>
 
 {% endblock %}

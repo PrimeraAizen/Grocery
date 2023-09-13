@@ -10,19 +10,13 @@
     {% block title %}
     <title>Store</title>
     {% endblock %}
-
-
-    <!-- Bootstrap core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Custom styles for this template -->
-    <link href="vendor/css/index.css" rel="stylesheet">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Vue - Clean Minimal eCommerce HTML Template</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <link rel="manifest" href="site.webmanifest">
+    <script>
+        let user = '{{ request.user }}'
+    </script>
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'main/img/favicon.png' %}">
     <!-- Place favicon.ico in the root directory -->
 
@@ -290,9 +284,11 @@
                                                         <img class="secondary-img" src="{{ product.image.url }}" alt="">
                                                     </a>
                                                     <div class="product-action text-center">
-                                                        <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
-                                                            <i class="flaticon-shopping-cart"></i>
+                                                        
+                                                        <a href="#" title="Shopping Cart">
+                                                            <i id="updateBtn" class="flaticon-shopping-cart" data-product="{{ product.id }}" data-action="add"></i>
                                                         </a>
+                                                        
                                                         <a href="{% url 'product_detail' product.id %}" title="Quick View">
                                                             <i class="flaticon-eye"></i>
                                                         </a>
@@ -476,6 +472,58 @@
     <script src="{% static 'main/js/jquery.magnific-popup.min.js' %}"></script>
     <script src="{% static 'main/js/plugins.js' %}"></script>
     <script src="{% static 'main/js/main.js' %}"></script>
+
+    <script>
+    
+        function getCookie(name){
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== ''){
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++){
+                    let cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')){
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        let csrftoken = getCookie('csrftoken');
+        let cart = JSON.parse(getCookie('cart'));
+
+    if (cart == undefined){
+        cart = {};
+        console.log('Cart created!', cart);
+        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/";
+    }
+    console.log(cart);
+
+
+    function addCookieItem(productID, action){
+        console.log('User is not authenticated');
+
+        if (action == 'add'){
+            if (cart[productID] == undefined){
+                cart[productID] = {'quantity': 1}
+            }else{
+                cart[productID]['quantity'] += 1
+            }
+        }
+
+        if (action == 'remove'){
+            cart[productID]['quantity'] -= 1
+
+            if (cart[productID]['quantity'] <= 0){
+                console.log('Remove Item');
+                delete cart[productID];
+            }
+        }
+        console.log('Cart:', cart);
+        document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        location.reload();
+    }
+    </script>
 </body>
 
 </html>

@@ -83,8 +83,8 @@
                                             <div class="cart-plus-minus"><input type="text" value="1"/></div>
                                         </div>
 
-                                        <div class="details-cart mt-40">
-                                            <a class="btn theme-btn" style="color: white;" href="{% url 'add_to_cart' product.id %}">Добавить в корзину</a>
+                                        <div class="details-cart mt-40">                
+                                            <a id="updateBtn" class="btn theme-btn" style="color: white;" href="#" data-product="{{ product.id }}" data-action="add">Добавить в корзину</a>
                                         </div>
                                     </form>
                                 </div>
@@ -237,8 +237,8 @@
                                 <img class="secondary-img" src="{{ item.image.url }}" alt="">
                             </a>
                             <div class="product-action text-center">
-                                <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
-                                    <i class="flaticon-shopping-cart"></i>
+                                <a href="#" title="Shopping Cart">
+                                    <i id="updateBtn" class="flaticon-shopping-cart" data-product="{{ product.id }}" data-action="add"></i>
                                 </a>
                                 <a href="#" title="Quick View">
                                     <i class="flaticon-eye"></i>

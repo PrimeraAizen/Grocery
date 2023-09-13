@@ -110,7 +110,10 @@ class OrderItem(models.Model):
         return reverse('cart')
     
 class ShippingAddress(models.Model):
-    user = models.ForeignKey(Customers, on_delete=models.CASCADE)
+    user = models.ForeignKey(Customers, on_delete=models.SET_NULL, blank=True, null=True)
+    first_name = models.CharField(max_length=100, blank=True, null=True)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    apartment = models.CharField(max_length=100, blank=True, null=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, blank=True, null=True)
     address = models.CharField(max_length=100)
     city = models.CharField(max_length=100)
@@ -125,7 +128,7 @@ class ShippingAddress(models.Model):
         verbose_name_plural = 'Shipping Addresses'
     
     def __str__(self):
-        return self.user.user.email
+        return f'{self.first_name} {self.last_name}, Заказ: {self.order.pk}'
     
     def get_absolute_url(self):
         return reverse('cart')

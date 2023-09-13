@@ -52,15 +52,14 @@
                                 </ul>
                             </div>
                             <div class="pro-filter mb-40 f-right">
-                                <form method="POST">
+                                <form>
                                     {% csrf_token %}
                                     <select name="sorting" id="pro-filter">
-                                        <option value="default">Сортировка</option>
-                                        <option value="top">Топ продукты</option>
+                                        <option value="default" >Сортировка</option>
+                                        <option value="top" selected>Топ продукты</option>
                                         <option value="increasing">С мин по макс</option>
                                         <option value="decreasing">С макс по мин</option>
                                     </select>
-                                    <input type="submit" value="select">
                                 </form>
                             </div>
                         </div>
@@ -78,8 +77,8 @@
                                                 <img class="secondary-img" src="{{ product.image.url }}" alt="">
                                             </a>
                                             <div class="product-action text-center">
-                                                <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
-                                                    <i class="flaticon-shopping-cart"></i>
+                                                <a href="#" title="Shopping Cart">
+                                                    <i id="updateBtn" class="flaticon-shopping-cart" data-product="{{ product.id }}" data-action="add"></i>
                                                 </a>
                                                 <a href="#" title="Quick View">
                                                     <i class="flaticon-eye"></i>
@@ -161,8 +160,8 @@
                                         </div>
                                         <p>{{ product.short_description }}</p>
                                         <div class="product-action">
-                                            <a href="{% url 'add_to_cart' product.id %}" title="Shopping Cart">
-                                                <i class="flaticon-shopping-cart"></i>
+                                            <a href="#" title="Shopping Cart">
+                                                <i id="updateBtn" class="flaticon-shopping-cart" data-product="{{ product.id }}" data-action="add"></i>
                                             </a>
                                             <a href="#" title="Quick View">
                                                 <i class="flaticon-eye"></i>
@@ -224,20 +223,14 @@
 
 
 </main>
+<script>
+    const sortingBtn = document.querySelector('#pro-filter');
+    sortingBtn.addEventListener('change', (e) => {
+        output = sortingBtn.options[sortingBtn.selectedIndex].value;
+        console.log(output);
+        
+    });
+    
+
+</script>
 {% endblock %}
-<!-- footer start -->
-
-<!-- footer end -->
-
-<!-- Fullscreen search -->
-<!-- end fullscreen search -->
-
-
-
-
-
-<!-- JS here -->
-
-</body>
-
-</html>

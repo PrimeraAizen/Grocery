@@ -17,8 +17,8 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpResponse
-
+from django.http import HttpResponse, JsonResponse
+import json
 
 # Main page.
 def index(request):
@@ -38,6 +38,7 @@ def product(request, pk):
     return render(request, 'main/product-simple.html', {'product': product, 'products': products, 'items': items, 'order': order})
 
 # Shop page.
+@csrf_exempt
 def shop(request):
     products = Product.objects.all()
     sorting = request.POST.get('sorting') if request.POST.get('sorting') else ''
@@ -48,7 +49,6 @@ def shop(request):
     elif sorting == 'top':
         products = products.order_by('-stock')
     categories = products.values_list('category', flat=True).distinct().order_by()
-    print(categories)
     category_list = request.POST.getlist('categories') if request.POST.getlist('categories') else ''
     products = products.filter(Q(category__in=category_list) if category_list else Q(category__in=categories))
     cart = get_cart(request)
@@ -195,15 +195,6 @@ def cart(request):
     order = cart['order']
     return render(request, 'main/cart.html', {'items': items, 'order': order})
 
-# Adding products to cart
-def add_to_cart(request, pk):
-    product = Product.objects.get(id=pk)
-    order, created = Order.objects.get_or_create(customer=Customers.objects.get(user=request.user), complete=False)
-    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
-    order_item.quantity += 1
-    order_item.save()
-    return redirect('cart')
-
 # Removing products from cart
 def remove_from_cart(request, pk):
     order_item = OrderItem.objects.get(id=pk)
@@ -213,13 +204,39 @@ def remove_from_cart(request, pk):
 # Changing quantity of products in cart
 @csrf_exempt
 def change_item_quantity(request):
-    print(request.POST.get('id'))
-    print(request.POST.get('quantity'))
     order_item = OrderItem.objects.get(id=request.POST.get('id'))
     if request.POST.get('quantity'):
         order_item.quantity = request.POST.get('quantity')
         order_item.save()
+        if int(order_item.quantity) <= 0:
+            order_item.delete()
     return redirect('cart')
+
+# Adding products to cart
+def update_cart(request):
+    data = json.loads(request.body)
+    productId = data['productID']
+    action = data['action']
+
+    print('Action:', action)
+    print('Product:', productId)
+
+    customer = Customers.objects.get(user=request.user)
+    product = Product.objects.get(id=productId)
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
+    order_item, created = OrderItem.objects.get_or_create(order=order, product=product)
+
+    if action == 'add':
+        order_item.quantity += 1
+    elif action == 'remove':
+        order_item.quantity -= 1
+    order_item.save()
+
+    if order_item.quantity <= 0:
+        order_item.delete()
+
+    return JsonResponse('Item was added', safe=False)
+    
 
 def profile(request):
     pass
@@ -237,21 +254,25 @@ def checkout(request):
     if request.method == 'POST':
         order.complete = True
         order.save()
-        if request.POST.get('ship-box'):
+        if request.POST.get('ship-box') == 'on':
             ShippingAddress.objects.create(
-                user=customer,
+                first_name=request.POST.get('first_name2'),
+                last_name=request.POST.get('last_name2'),
                 order=order,
                 address=request.POST.get('address2'),
                 city=request.POST.get('city2'),
                 country=request.POST.get('country2'),
+                apartment=request.POST.get('apartment2'),
                 postal_code=request.POST.get('postal_code2'),
                 phone=request.POST.get('phone2'),
-                order_notes=request.POST.get('order-notes2')
+                order_notes=request.POST.get('order-notes')
             );
         else:
             ShippingAddress.objects.create(
                 user=customer,
                 order=order,
+                first_name=request.POST.get('first_name'),
+                last_name=request.POST.get('last_name'),
                 address=request.POST.get('address'),
                 city=request.POST.get('city'),
                 country=request.POST.get('country'),
